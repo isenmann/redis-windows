@@ -40,7 +40,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: gcc make pkg-config mingw-w64-x86_64-python libopenssl openssl-devel mingw-w64-x86_64-libc++
+          install: gcc make pkg-config tcl mingw-w64-x86_64-python libopenssl openssl-devel mingw-w64-x86_64-libc++
       - name: Build Redis
         if: ${{ success() }}
         run: |
@@ -49,6 +49,7 @@ jobs:
           cd redis-${{ inputs.tag_name }}
           sed -i 's/-Wextra -Werror //g' ./deps/hiredis/Makefile
           make -i PREFIX=$workspace/dist install BUILD_TLS=yes
+          make test
           cp $workspace/README.md $workspace/start.bat /d/a/_temp/msys64/usr/bin/msys-2.0.dll /d/a/_temp/msys64/usr/bin/msys-crypto-3.dll /d/a/_temp/msys64/usr/bin/msys-ssl-3.dll redis.conf sentinel.conf $workspace/dist/bin/
           cd $workspace/dist/
           mv bin Redis-${{ inputs.tag_name }}-Windows-x64
